@@ -59,7 +59,7 @@ after_success:
 #   skip_cleanup: true
 #   api_key:
 #     secure:
-#   file: "pressbooks-plugin-scaffold-$TRAVIS_TAG.zip"
+#   file: "roe-pressbooks-$TRAVIS_TAG.zip"
 #   on:
 #     tags: true
-#     repo: pressbooks/pressbooks-plugin-scaffold
+#     repo: villa7/roe-pressbooks
