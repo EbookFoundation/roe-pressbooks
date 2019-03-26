@@ -32,7 +32,7 @@ class ROEIntegration extends Export {
 		error_log(print_r($output, true));*/
 
 		$siteurl = get_site_url(get_current_blog_id());
-		$identifier = isset($this->bookMeta['pb_print_isbn']) ? $this->bookMeta['pb_print_isbn'] : "url:md5:".md5($siteurl);
+		$identifier = isset($this->bookMeta['pb_print_isbn']) ? ("urn:isbn:" . $this->bookMeta['pb_print_isbn']) : ("url:md5:" . md5($siteurl));
 		$timestamp = (new \DateTime())->format('c');
 		$output = [
 			"metadata" => [

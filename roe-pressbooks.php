@@ -58,23 +58,20 @@ if ( ! \Pressbooks\Book::isBook() ) {
 	$updater->setBranch( 'master' );
 }
 
-function roe_check_compatibility () {
-	if ( is_plugin_active('roe-pressbooks/roe-pressbooks.php') && is_network_admin() ) {
-		if ( ! \ROE\ROEIntegration::is_active() ) {
-			add_action( 'network_admin_notices', '_roe_show_set_config' );
-		}
-	}
-}
 
 function _roe_show_set_config () {
 	echo '<div class="notice notice-warning"><p style="display:inline-block;height:40px;line-height:40px">';
   _e('Please configure your site\'s publisher id and secret. It is required to publish to the River of Ebooks.', 'roe-pressbooks');
-	echo '</p><a class="button" style="float:right;height:30px;margin:15px 0;" href="#">';
+	echo '</p><a class="button" style="float:right;height:30px;margin:15px 0;" href="'. get_admin_url() .'network/settings.php?page=roe-pressbooks">';
 	_e('Settings', 'roe-pressbooks');
 	echo '</a></div>';
 }
 
-roe_check_compatibility();
+if ( is_plugin_active('roe-pressbooks/roe-pressbooks.php') && is_network_admin() ) {
+	if ( ! \ROE\ROEIntegration::is_active() ) {
+		add_action( 'network_admin_notices', '_roe_show_set_config' );
+	}
+}
 
 add_filter( 'pb_active_export_modules', function ( $modules ) {
 	if ( isset( $_POST['export_formats']['roe'] ) && \ROE\ROEIntegration::is_active() ) {
