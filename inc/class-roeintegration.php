@@ -2,79 +2,110 @@
 
 namespace ROE;
 
-class ROEIntegration {
+use Pressbooks\Modules\Export\Export;
+
+class ROEIntegration extends Export {
 	const VERSION = '1.0.0';
 	protected $plugin_slug = 'roe-pressbooks';
 
-	/**
-	 * Instance of this class.
-	 *
-	 * @since 1.0.0
-	 * @var object
-	 */
-	protected static $instance = null;
-
-	private function __construct () {
-
+	function __construct ( array $args ) {
+		$this->bookTitle = get_bloginfo( 'name' );
+		$this->bookMeta = \Pressbooks\Book::getBookInformation();
 	}
 
 	/**
-	 * Return an instance of this class.
-	 *
-	 * @since     1.0.0
-	 *
-	 * @return    object    A single instance of this class.
+	 * Return whether the plugin is usable.
+	 * @since    1.0.0
+	 * @return   presence of both key and secret.
 	 */
-	public static function get_instance () {
-		// If the single instance hasn't been set, set it now.
-		if (null == self::$instance) {
-			self::$instance = new self;
+	public static function is_active () {
+		return get_site_option('roe_pressbooks_key') && get_site_option('roe_pressbooks_secret');
+	}
+
+	/**
+	 * Create $output
+	 * @return bool
+	 */
+	function convert () {
+		/*$output = $this->transform(true);
+		$this->output = $output;
+		error_log(print_r($output, true));*/
+
+		$siteurl = get_site_url(get_current_blog_id());
+		$identifier = isset($this->bookMeta['pb_print_isbn']) ? $this->bookMeta['pb_print_isbn'] : "url:md5:".md5($siteurl);
+		$timestamp = (new \DateTime())->format('c');
+		$output = [
+			"metadata" => [
+				"@type" => "http://schema.org/Book",
+				"title" => $this->bookMeta['pb_title'],
+				"author" => $this->bookMeta['pb_authors'],
+				"identifier" => $identifier,
+				"publisher" => $siteurl,
+				"language" => $this->bookMeta['pb_language'],
+				"modified" => $timestamp
+			],
+			"links" => [],
+			"images" => [
+				[
+					"href" => $this->bookMeta['pb_cover_image']
+				]
+			]
+		];
+		$this->output = $output;
+
+		return $this->send();
+	}
+
+	/**
+	 * Check the sanity of $this->output
+	 *
+	 * @return bool
+	 */
+	function validate () {
+		return true;
+	}
+
+	function transform ($return = false) {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( __( 'Invalid permission error', 'pressbooks' ) );
 		}
 
-		return self::$instance;
-	}
-
-	/**
-	 * Returns merged array of all ROE user options
-	 * @since 1.0.2
-	 * @return array
-	 */
-	private function getUserOptions () {
-		$other = get_option('roe_other_settings', []);
-		$result = @array_merge($other);
-
-		return $result;
-	}
-
-	/**
-	 * Fired when the plugin is activated.
-	 * @since    1.0.0
-	 */
-	function activate () {
-		if (!current_user_can('activate_plugins')) {
-			return;
+		static $buffer;
+		if ( ! function_exists( 'wxr_cdata' ) ) {
+			ob_start();
+			require_once( ABSPATH . 'wp-admin/includes/export.php' );
+			@export_wp(); // @codingStandardsIgnoreLine
+			$buffer = ob_get_clean();
 		}
-		add_site_option('roe-pressbooks-activated', true);
-	}
-
-	/**
-	 * Fired when the plugin is deactivated.
-	 * @since    1.0.0
-	 */
-	function deactivate () {
-		if (!current_user_can('activate_plugins')) {
-			return;
+		if ( $return ) {
+			return $buffer;
+		} else {
+			echo $buffer;
+			return null;
 		}
-		delete_site_option('roe-pressbooks-activated');
 	}
 
-	/**
-	 * Return the plugin slug.
-	 * @since    1.0.0
-	 * @return    Plugin slug variable.
-	 */
-	function getPluginSlug () {
-		return $this->plugin_slug;
+	function send () {
+		$url = ROE_BASE_URL . "/api/publish";
+		$content = json_encode($this->output);
+		$headers = [
+			"roe-key: " . get_site_option('roe_pressbooks_key'),
+			"roe-secret: " . get_site_option('roe_pressbooks_secret'),
+			"Content-Type: application/json"
+		];
+		// error_log(print_r($headers, true));
+
+		$response = wp_remote_post($url, [
+			"headers" => $headers,
+			"body" => $content
+		]);
+
+		// error_log(print_r($response, true));
+		if ( is_wp_error($response) || $response['response']['code'] !== 200 ) {
+			return false;
+		}
+
+		return true;
 	}
 }
 
