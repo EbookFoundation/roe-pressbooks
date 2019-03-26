@@ -88,19 +88,16 @@ class ROEIntegration extends Export {
 	function send () {
 		$url = ROE_BASE_URL . "/api/publish";
 		$content = json_encode($this->output);
-		$headers = [
+		$headers = join("\r\n", [
 			"roe-key: " . get_site_option('roe_pressbooks_key'),
 			"roe-secret: " . get_site_option('roe_pressbooks_secret'),
-			"Content-Type: application/json"
-		];
-		// error_log(print_r($headers, true));
-
+			"Content-Type: application/json",
+		]);
 		$response = wp_remote_post($url, [
 			"headers" => $headers,
 			"body" => $content
 		]);
 
-		// error_log(print_r($response, true));
 		if ( is_wp_error($response) || $response['response']['code'] !== 200 ) {
 			return false;
 		}

@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: River of Ebooks for Pressbooks
-Plugin URI: https://pressbooks.org
+Plugin URI: https://github.com/villa7/roe-pressbooks
 Description: RoE integration with Pressbooks
 Version: 1.0.0
-Author: Pressbooks (Book Oven Inc.)
-Author URI: https://pressbooks.org
+Author: Free Ebook Foundation
+Author URI: https://ebookfoundation.org/
 Requires PHP: 7.0
 Pressbooks tested up to: 5.4.1
 Text Domain: roe-pressbooks
@@ -85,18 +85,11 @@ add_filter( 'pb_active_export_modules', function ( $modules ) {
 
 add_filter( 'pb_export_formats', function ( $formats ) {
 	if (\ROE\ROEIntegration::is_active()) {
-		$formats['exotic']['roe'] = __( 'River of Ebooks', 'pressbooks' );
+		$formats['exotic']['roe'] = __( 'Send to River of Ebooks', 'pressbooks' );
 	}
 	return $formats;
 } );
 
 if (is_network_admin()) {
 	new \ROE\Admin\ROEAdmin;
-}
-
-add_action( 'http_api_debug', 'viper_http_api_debug', 10, 5 );
-function viper_http_api_debug( $response, $type, $class, $args, $url ) {
-    error_log( 'Request URL: ' . var_export( $url, true ) );
-    error_log( 'Request Args: ' . var_export( $args, true ) );
-    error_log( 'Request Response : ' . var_export( $response, true ) );
 }
