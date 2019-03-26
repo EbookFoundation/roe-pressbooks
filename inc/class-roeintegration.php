@@ -44,7 +44,11 @@ class ROEIntegration extends Export {
 				"language" => $this->bookMeta['pb_language'],
 				"modified" => $timestamp
 			],
-			"links" => [],
+			"links" => [
+				[
+					"href" => $siteurl	
+				]
+			],
 			"images" => [
 				[
 					"href" => $this->bookMeta['pb_cover_image']
