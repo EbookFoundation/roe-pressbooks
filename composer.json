@@ -1,5 +1,5 @@
 {
-	"name": "EbookFoundation/roe-pressbooks",
+	"name": "ebookfoundation/roe-pressbooks",
 	"license": "GPL-3.0-or-later",
 	"type": "wordpress-plugin",
 	"description": "A Pressbooks plugin to integrate with the River of Ebooks.",
