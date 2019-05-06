@@ -2,7 +2,7 @@
 	<h1>River of Ebooks API credentials</h1>
 
 	<p>
-		Register an application here: <a href="http://ec2-18-219-223-27.us-east-2.compute.amazonaws.com/keys"><?php echo ROE_BASE_URL; ?>/keys</a>.
+		Register an application here: <a href="<?php echo ROE_BASE_URL; ?>/keys"><?php echo ROE_BASE_URL; ?>/keys</a>.
 		<br />
 		Once it has been whitelisted, your users will be able to use the AppID and secret to publish ebooks to the River of Ebooks.
 	</p>
