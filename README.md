@@ -1,5 +1,9 @@
 # RoE for Pressbooks
-(https://img.shields.io/packagist/dt/ebookfoundation/roe-pressbooks.svg)](https://packagist.org/packages/ebookfoundation/roe-pressbooks)
+
+[![Packagist](https://img.shields.io/packagist/l/ebookfoundation/roe-pressbooks.svg)](https://packagist.org/packages/ebookfoundation/roe-pressbooks)
+[![Current Release](https://img.shields.io/github/release/ebookfoundation/roe-pressbooks.svg)](https://github.com/ebookfoundation/roe-pressbooks/releases/latest/)
+[![Packagist](https://img.shields.io/packagist/v/ebookfoundation/roe-pressbooks.svg)](https://packagist.org/packages/ebookfoundation/roe-pressbooks)
+[![Packagist](https://img.shields.io/packagist/dt/ebookfoundation/roe-pressbooks.svg?color=brightgreen)](https://packagist.org/packages/ebookfoundation/roe-pressbooks)  
 River of Ebooks integration for Pressbooks.
 
 ## Composer
